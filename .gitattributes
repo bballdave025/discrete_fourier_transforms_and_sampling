@@ -98,17 +98,6 @@
 ## on checkout.) We also hate CRLF endings, unless someone has built
 ## on VS.
 ## The LF line endings should always be there on checkout.
-*.ipynb          text eol=lf
-*.glm            text eol=lf
-*.ref            text eol=lf
-*.hyp            text eol=lf
-*.glmbld         text eol=lf
-*.list           text eol=lf
-*.lst            text eol=lf
-
-*.uc             text eol=lf
-*.in             text eol=lf
-PKG-INFO         text eol=lf
 
 
 ## Probably found automatically, but let's make sure
@@ -117,6 +106,8 @@ PKG-INFO         text eol=lf
 *.md             text eol=lf
 *.txt            text eol=lf
 *.cfg            text eol=lf
+*.nb             text eol=lf
+*.dat            text eol=lf
 #*.bak            text eol=lf  ## .gitignore shouldn't let any through
 #*.log            text eol=lf  ## .gitignore shouldn't let any through
 #*.out            text eol=lf  ## .gitignore shouldn't let any through
@@ -137,17 +128,17 @@ PKG-INFO         text eol=lf
 ## Denote all files that are truly binary and should not be modified
 *.dll           binary
 *.exe           binary
-asclite         binary
-rfilter1        binary
-rover           binary
-sclite          binary
-sctkUnit        binary
-sc_stats        binary
 #*.pyc           binary  ## .gitignore shouldn't let any through, since
                          ## I don't use them in this project
-#no image files in package
-#no audio files in package
-#no video files in package
+
+#image files (there are some in the repo) 
+*.png           binary
+*.jpg           binary
+
+#audio files (none yet in the repo)
+*.wav           binary
+
+#video files (none yet in the repo)
 
 
 ## The following extensions exist on files inside the .git directory.
