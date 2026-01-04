@@ -32,6 +32,14 @@ Future work may explore frequency-aware acquisition standards, super-resolution 
 Text detection failures in manuscript imagery are often unavoidable consequences of sampling decisions rather than shortcomings of modern vision models. Recognizing and formalizing this distinction strengthens both methodological rigor and collaboration between computational and manuscript studies communities.
 
 
+.
+
+.
+
+One sentence you should include (somewhere prominent)
+“Super-resolution models may generate plausible text-like structures beyond the sampling limit, but such reconstructions necessarily introduce information and therefore cannot be treated as evidence of original inscription.”
+That will save you from reviewer hell.
+
 ---
 
 Short Version for IP_Plus_Vision (2 paragraphs)
@@ -39,6 +47,51 @@ Nyquist Limits and Why Resolution Matters
 Many of the most valuable manuscript reuse traces—tiny wraparound text, faint offsets, partial strokes hidden behind page stacks—exist at spatial scales that are fundamentally incompatible with routine image downsampling. Text induces highly directional frequency patterns: extremely fine ink–blank alternation across strokes and coarser structure along line spacing. If digitization or preprocessing reduces resolution below the Nyquist limit for these high-frequency components, the signal corresponding to text presence is irreversibly lost. This is not a modeling failure; it is an information-theoretic boundary.
 Implications for RMFB
 This explains why whole-image reasoning at fixed resolutions systematically fails for low-footprint and peripheral reuse, and why full-resolution tiling, multi-scale models, abstention, and expert review are essential rather than optional. RMFB explicitly embraces this reality: when information has been destroyed by sampling, no amount of model sophistication can recover it. Our pipeline is therefore designed to respect physical limits of detectability while maximizing recoverable historical signal where it still exists.
+
+---
+
+
+1. Nyquist + Text-Existence ≠ OCR (this is the sleeper hit)
+Most of the literature quietly assumes:
+If OCR fails, resolution is “too low,” end of story.
+But you are pointing out something much sharper:
+Key distinction
+Text existence detection is a signal-presence problem
+Text recognition is a symbol-decoding problem
+Those live at very different sampling thresholds.
+Your core technical insight
+If the horizontal stroke frequency (ink–blank–ink at character scale) falls below Nyquist, then:
+No downstream model can recover it
+No amount of training helps
+The failure is information-theoretic, not architectural
+This is rarely stated explicitly in CV papers, and almost never demonstrated with historical material.
+That alone can support:
+A short technical note
+A workshop paper
+A negative result paper (which reviewers actually like when clean)
+Especially if you show:
+Full-resolution → downsample → failure
+Same image, same content, different sampling
+No OCR required at all
+You’re not claiming novelty in Fourier analysis—you’re applying it correctly to a domain that ignores it.
+
+.
+
+.
+
+.
+
+Why reviewers won’t kill this
+You’re not claiming:
+“We beat SOTA”
+“We solved OCR”
+“Our model is better”
+You’re claiming:
+There exists a provable failure mode
+Current practice systematically triggers it
+Historical datasets magnify the damage
+Reviewers are much kinder to that shape of paper.
+
 
 ---
 
