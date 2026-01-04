@@ -1,3 +1,6 @@
+Many low-footprint reuse signals are not merely difficult for standard CNNs but are provably unrecoverable once images are downsampled below the Nyquist rate required to preserve stroke-level spatial frequencies.
+
+
 FORMATTING IS NOT HERE, YET!
 
 Technical Note (≈1–2 pages)
