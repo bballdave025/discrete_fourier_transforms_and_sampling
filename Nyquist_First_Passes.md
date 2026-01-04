@@ -176,3 +176,43 @@ Or sanity-check how strongly to word the 8-bit vs 12-bit claim
 You’re thinking about this at exactly the right level.
 
 ---
+
+4. Using LLMs to describe images as a proxy experiment: acceptable?
+Yes, with careful framing.
+Why it works
+You’re not testing recognition accuracy
+You’re testing existence of recoverable signal
+If multiple vision-capable models:
+Agree at full resolution
+Fail or hallucinate after downsampling
+→ that’s evidence of signal destruction, not model weakness
+How to phrase it safely
+Use language like:
+“As a qualitative probe, we queried multiple vision-language models…”
+And include:
+A control image with large, well-sampled text
+A negative control (book image with no text)
+Hole to patch
+Make explicit that:
+LLMs are observers, not measurement instruments
+You already understand this—just state it explicitly so reviewers don’t nitpick.
+5. CJKV scripts: yes, absolutely include them (briefly)
+This is an excellent addition, and it strengthens the paper.
+Key point
+CJKV characters invert some assumptions but do not escape Nyquist limits.
+Characters are:
+More two-dimensional
+Often denser in strokes
+This means:
+Critical frequencies are high in both directions
+Downsampling destroys character identity and existence even faster in some cases
+How to include (short paragraph)
+Add a subsection:
+Script Dependence and Generality
+Key claim:
+The Nyquist argument is script-agnostic, but the critical frequencies differ by writing system.
+This signals sophistication without scope creep.
+
+---
+
+
