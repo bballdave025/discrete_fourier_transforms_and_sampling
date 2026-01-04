@@ -96,4 +96,83 @@ Reviewers are much kinder to that shape of paper.
 ---
 
 
+Yes—you’re circling a real, extractable, and important argument, and it fits perfectly with the Nyquist story. You’re not wrong; you just need the argument sharpened and framed in the language reviewers expect.
+Let me restate it cleanly, then refine it into something you can drop straight into a technical note.
+The core insight (clean version)
+Bit depth is a second, independent sampling axis.
+Spatial resolution answers where samples are taken;
+bit depth answers how finely intensity is measured.
+For low–pixel-footprint text, bit depth can be the limiting factor even when spatial resolution is adequate.
+This is under-discussed in document analysis because most modern datasets assume:
+high contrast
+large glyphs
+post-thresholding robustness
+None of those assumptions hold for early manuscripts.
+Why 8-bit vs 12-bit matters specifically for faint text
+Your intuition is right, but the framing needs one tweak:
+It’s not that the character is “6×6 pixels” per se—it’s that:
+The ink–substrate contrast occupies only a small fraction of the available dynamic range
+That contrast is distributed across adjacent pixels (stroke edges, bleed, ghosting)
+Quantization collapses those differences before any spatial reasoning happens
+What 8-bit quantization does
+256 intensity levels total
+Effective usable levels for faint ink on aged parchment might be <10
+Quantization noise becomes comparable to signal magnitude
+What 12-bit quantization preserves
+4096 intensity levels
+The same faint ink now spans dozens of bins
+Stroke edges retain monotonic gradients instead of step functions
+This is crucial because CNNs and ViTs detect gradients, not symbols.
+Why humans still “see” it (and machines don’t)
+Your Bayesian point is exactly right and worth stating explicitly.
+Humans:
+Integrate context across space
+Use learned priors about letterforms
+Tolerate heavy quantization by hallucinating continuity
+Machines:
+Operate on local differences
+Cannot assume intent
+Cannot reconstruct gradients that were never sampled
+So a human might read text from:
+3–4 effective gray levels
+while a model may fail unless:
+gradients exceed quantization noise
+edge responses survive early layers
+This is not a flaw of ML—it’s a sampling decision upstream.
+How this ties cleanly to Nyquist (this is the win)
+You now have two orthogonal Nyquist-like constraints:
+Spatial Nyquist
+Stroke frequency > sampling frequency → information destroyed
+Amplitude (quantization) Nyquist
+Contrast < quantization step → gradients destroyed
+Most CV papers talk about (1).
+Almost none in document analysis talk seriously about (2).
+Your contribution is pointing out that historical documents routinely violate both simultaneously.
+A reviewer-safe way to phrase it (you can quote this)
+Even when spatial sampling satisfies the Nyquist criterion for stroke-scale features, insufficient intensity quantization can suppress the very gradients on which convolutional and attention-based models rely. In practice, early digitization pipelines that favored 8-bit grayscale over higher bit-depth capture irreversibly discarded low-contrast textual signals, particularly in aged or reused manuscript materials.
+That sentence will not get you reviewer hell.
 
+---
+
+You should not say:
+“12-bit always solves this”
+“Super-resolution recovers lost information”
+You should say:
+Higher bit depth preserves recoverable signal
+Super-resolution cannot recreate quantization-lost gradients
+Decisions at capture time bound all future ML
+That keeps you on solid information-theoretic ground.
+Bottom line
+You now have a three-part, internally consistent argument:
+Spatial downsampling violates Nyquist for stroke frequency
+Bit-depth reduction violates Nyquist for contrast gradients
+Rare peripheral text makes these losses unacceptably costly
+That’s not a stretch.
+That’s a well-posed, publishable technical position.
+If you want, next I can:
+Draft the exact paragraph for the technical note
+Help you choose one killer figure that does 80% of the work
+Or sanity-check how strongly to word the 8-bit vs 12-bit claim
+You’re thinking about this at exactly the right level.
+
+---
