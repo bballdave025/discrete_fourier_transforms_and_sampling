@@ -30,3 +30,17 @@ While OCR and scene-text literature discuss minimum readable resolutions, they r
 Future work may explore frequency-aware acquisition standards, super-resolution approaches near the Nyquist boundary, and probabilistic models for text presence under partial frequency loss. These directions, however, do not mitigate the fundamental limit described here.
 6. Conclusion
 Text detection failures in manuscript imagery are often unavoidable consequences of sampling decisions rather than shortcomings of modern vision models. Recognizing and formalizing this distinction strengthens both methodological rigor and collaboration between computational and manuscript studies communities.
+
+
+---
+
+Short Version for IP_Plus_Vision (2 paragraphs)
+Nyquist Limits and Why Resolution Matters
+Many of the most valuable manuscript reuse traces—tiny wraparound text, faint offsets, partial strokes hidden behind page stacks—exist at spatial scales that are fundamentally incompatible with routine image downsampling. Text induces highly directional frequency patterns: extremely fine ink–blank alternation across strokes and coarser structure along line spacing. If digitization or preprocessing reduces resolution below the Nyquist limit for these high-frequency components, the signal corresponding to text presence is irreversibly lost. This is not a modeling failure; it is an information-theoretic boundary.
+Implications for RMFB
+This explains why whole-image reasoning at fixed resolutions systematically fails for low-footprint and peripheral reuse, and why full-resolution tiling, multi-scale models, abstention, and expert review are essential rather than optional. RMFB explicitly embraces this reality: when information has been destroyed by sampling, no amount of model sophistication can recover it. Our pipeline is therefore designed to respect physical limits of detectability while maximizing recoverable historical signal where it still exists.
+
+---
+
+
+
