@@ -1,3 +1,7 @@
+
+
+## First draft of technical paper and done discussion about it
+
 Many low-footprint reuse signals are not merely difficult for standard CNNs but are provably unrecoverable once images are downsampled below the Nyquist rate required to preserve stroke-level spatial frequencies.
 
 
@@ -97,6 +101,10 @@ Reviewers are much kinder to that shape of paper.
 
 
 ---
+
+---
+
+Discussion of but depth, CJKV, etc.
 
 
 Yes—you’re circling a real, extractable, and important argument, and it fits perfectly with the Nyquist story. You’re not wrong; you just need the argument sharpened and framed in the language reviewers expect.
@@ -218,11 +226,19 @@ This signals sophistication without scope creep.
 
 ---
 
+---
+
+## Paragraphs on extension to fingerprints, stitching, etc.
+
 Beyond text, the Nyquist considerations discussed here apply equally to other fine-scale, high-frequency visual phenomena commonly present in manuscript digitizations, including fingerprints, sewing traces, tooling marks, abrasion patterns, and surface preparation artifacts. These features often occupy a spatial frequency regime similar to or higher than that of small handwriting strokes and are therefore especially vulnerable to loss under downsampling, aggressive compression, bit-depth reduction, or contrast normalization. As with text, the critical distinction is not whether such features existed on the original object, but whether they remain structurally present in the digitized image. When ridge–valley periodicity, continuity, or directional flow is no longer preserved above the sampling threshold, the phenomenon ceases to exist as a classifiable entity within the image, regardless of human intuition or contextual knowledge.
 This distinction has important consequences for annotation practice. In this work, non-textual classifications (e.g., fingerprints, tool impressions, iron-gall ink corrosion boundaries, or animal-skin follicle patterns) are assigned only when the defining structural features are explicitly resolvable in the image itself. Partial cues—such as isolated dark marks, suggestive smudges, or patterns that could plausibly arise from unrelated processes—are deliberately excluded, even when expert judgment might infer their origin. This conservative approach necessarily produces false negatives relative to the physical artifact but avoids false positives within the digitized domain. In doing so, it preserves a clear separation between evidence and inference, ensuring that annotations remain invariant under reproducible inspection rather than dependent on prior knowledge of the object or its provenance.
 The implications of this approach extend to model evaluation and dataset design. Machine learning systems trained on digitized cultural heritage materials cannot be expected to recover information that has been removed by sampling below the Nyquist limit, nor should they be encouraged to hallucinate structure based on contextual similarity or learned priors. Treating absent high-frequency phenomena as absent—rather than as degraded but recoverable—aligns annotation practice with the physical limits of signal acquisition and prevents downstream models from being implicitly rewarded for overinterpretation. More broadly, this framing clarifies that digitization choices (resolution, bit depth, compression) do not merely affect model performance but determine which classes of historical evidence remain available for computational study at all.
 
 ---
+
+---
+
+## A later pass at full paper scope (if not content)
 
 (Intro / Framing)
 Many failures of text and surface-trace detection in digitized manuscript imagery are commonly attributed to modeling limitations or insufficient training data. In this work, we argue that a substantial class of such failures is instead governed by fundamental constraints imposed by sampling theory. When digitization, preprocessing, or compression decisions eliminate critical spatial or intensity information, the relevant signal ceases to exist within the image itself. No downstream model—regardless of architecture or training regime—can recover information that has been destroyed at acquisition or encoding time.
@@ -252,3 +268,141 @@ By specifying testable claims and refutation criteria in advance, this study aim
 
 ---
 
+---
+
+## First-draft IP_Plus_Vision
+
+*Beginning of document*
+
+# IP_Plus_Vision_Nyquist
+**Title:** Nyquist Constraints and the Detectability of Textual Traces in Digitized Manuscript Imagery  
+**Author:** David Black (DWB, GitHub @bballdave025)  
+**Status:** Vision / technical framing (companion to RMFB)  
+**Scope:** Sampling limits, not model performance  
+
+---
+
+## 0. Purpose of this document
+
+This document articulates a core technical constraint that motivates several design decisions in RMFB and related manuscript-analysis pipelines: **some historically meaningful visual signals are unrecoverable once digitization or preprocessing violates fundamental sampling limits**.
+
+The goal is not to introduce new signal-processing theory, but to **apply well-understood sampling principles correctly** to a domain that frequently ignores them. This framing clarifies why certain failures are unavoidable, why specific architectural choices are necessary, and why human expertise remains indispensable.
+
+---
+
+## 1. The key distinction: detectability vs. recognizability
+
+Much of the literature on document analysis implicitly treats resolution limits as an OCR problem:
+
+> “If text cannot be read, resolution is too low.”
+
+This conflates two different tasks:
+
+- **Text existence detection** — determining whether inscriptional signal is present at all.
+- **Text recognition** — decoding symbols once signal is present.
+
+These tasks operate at **different sampling thresholds**. For reused manuscript fragments, especially low-footprint or peripheral traces, **existence detection** is often the limiting factor. When the signal required to establish existence is not preserved in the digitized image, recognizability is moot.
+
+---
+
+## 2. Directional frequency structure of text
+
+Text is not an isotropic visual phenomenon.
+
+Across many historical scripts, text exhibits:
+
+- **High-frequency structure orthogonal to stroke direction**  
+  (rapid ink–blank alternation at stroke scale)
+- **Lower-frequency structure along line spacing and layout**
+
+The presence of text depends critically on preservation of the **high-frequency stroke-scale components**. These components are often much finer than those required to identify page layout, parchment texture, or binding structure.
+
+---
+
+## 3. Nyquist limits and irreversible information loss
+
+If digitization or downstream preprocessing reduces spatial resolution such that sampling frequency falls below twice the dominant stroke frequency, one of two things occurs:
+
+- Under proper anti-aliasing, the signal is removed.
+- Under naive downsampling, it is aliased into unrelated lower frequencies.
+
+In either case, the original ink–blank–ink structure **no longer exists** in the sampled image.
+
+This is not degradation.  
+It is **irreversible annihilation of signal**.
+
+Once below the Nyquist limit, the presence of text is no longer recoverable by any downstream method—machine learning included.
+
+---
+
+## 4. Bit depth as a second sampling axis
+
+Spatial resolution is not the only relevant constraint.
+
+**Intensity quantization** imposes an independent limit:
+
+- Low-contrast ink on aged parchment may occupy only a small fraction of the dynamic range.
+- At 8-bit depth, quantization noise can become comparable to signal magnitude.
+- Gradient information critical for stroke detection collapses before spatial reasoning occurs.
+
+Higher bit depth preserves recoverable gradients, but **cannot restore information already lost**. This explains why humans may still “see” faint text while models fail: humans integrate priors and context; models depend on gradients that were never sampled.
+
+---
+
+## 5. What this is *not* claiming
+
+This document does **not** claim that:
+
+- higher resolution or bit depth guarantees recovery;
+- super-resolution models can reconstruct lost inscriptional evidence;
+- Nyquist limits explain all failures in document analysis.
+
+In particular:
+
+> **Super-resolution models may generate plausible text-like structures beyond the sampling limit, but such reconstructions necessarily introduce information and therefore cannot be treated as evidence of original inscription.**
+
+This distinction is essential for scholarly integrity.
+
+---
+
+## 6. Implications for RMFB and similar pipelines
+
+These constraints have direct operational consequences:
+
+- Whole-image downsampling is insufficient for low-footprint reuse detection.
+- Full-resolution tiling and multi-scale analysis are **requirements**, not optimizations.
+- Model abstention is principled when sampling limits are exceeded.
+- Human review is essential when information exists in the artifact but not in the image.
+
+RMFB is designed explicitly around these realities, treating sampling decisions as first-order determinants of what can and cannot be learned from digitized collections.
+
+---
+
+## 7. Beyond text: generality of the argument
+
+The same Nyquist considerations apply to other fine-scale phenomena commonly present in manuscript imagery, including:
+
+- fingerprints and ridge–valley patterns,
+- sewing traces and stitching holes,
+- tooling marks and abrasion,
+- iron-gall ink corrosion boundaries,
+- animal-skin follicle patterns.
+
+When defining such classes, RMFB assigns labels **only when the defining structural features are resolvable in the image itself**, deliberately excluding suggestive but unrecoverable cases. This preserves a clear separation between evidence and inference.
+
+---
+
+## 8. Why this framing matters
+
+Recognizing sampling limits as *information-theoretic boundaries* rather than modeling failures:
+
+- clarifies why certain reuse classes are systematically under-detected,
+- prevents overconfidence in automated outputs,
+- supports collaboration with manuscript-studies experts,
+- and aligns annotation practice with physical reality.
+
+Digitization choices do not merely affect model performance; they determine which classes of historical evidence remain available for computational study at all.
+
+---
+
+*End of document.*
