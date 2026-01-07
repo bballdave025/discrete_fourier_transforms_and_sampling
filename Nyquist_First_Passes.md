@@ -1,4 +1,4 @@
-# Nuquist Text Existence
+# Nyquist Text Existence
 
 A database dump of all ideas
 
