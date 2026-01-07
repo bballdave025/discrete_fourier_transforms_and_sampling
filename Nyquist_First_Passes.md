@@ -1,4 +1,6 @@
+# Nuquist Text Existence
 
+A database dump of all ideas
 
 ## First draft of technical paper and done discussion about it
 
